@@ -20,6 +20,7 @@
             {{-- <a href="" class="bg-primary px-4 py-2 rounded-[4px] text-white">HELP</a> --}}
         </div>
     </div>
+    @auth
     <div class="relative md:hidden flex flex-col items-center justify-between py-4 px-4 text-white">
         <!-- Tombol untuk menu burger -->
         <button id="menu-toggle" class="block text-black focus:outline-none lg:hidden">
@@ -31,13 +32,27 @@
         <!-- Daftar menu -->
         <ul id="menu"
             class="absolute top-16 right-0 hidden lg:flex flex-col items-center gap-4 bg-white text-black text-lg px-6 py-4 space-y-4 z-50 rounded-md text-center">
-            <li><a href="/" class="hover:text-gray-400">Home</a></li>
-            <li><a href="/materials" class="hover:text-gray-400">Materials</a></li>
-            <li><a href="/sop" class="hover:text-gray-400">SOP</a></li>
-            <li><a href="/instruksi-kerja" class="hover:text-gray-400">IK</a></li>
-            <li><a href="/about" class="hover:text-gray-400">About</a></li>
+            <li class="{{ request()->is('/*') ? 'bg-primary text-white px-3 py-1 rounded-md' : '' }}"><a href="/"
+                    class="hover:text-gray-400">Home</a></li>
+            <li class="{{ request()->is('materials*') ? 'bg-primary text-white px-3 py-1 rounded-md' : '' }}"><a
+                    href="/materials" class="hover:text-gray-400">Materials</a></li>
+            <li class="{{ request()->is('sop*') ? 'bg-primary text-white px-3 py-1 rounded-md' : '' }}"><a href="/sop"
+                    class="hover:text-gray-400">SOP</a></li>
+            <li class="{{ request()->is('instruksi-kerja*') ? 'bg-primary text-white px-3 py-1 rounded-md' : '' }}"><a
+                    href="/instruksi-kerja" class="hover:text-gray-400">IK</a></li>
+            <li class="{{ request()->is('about*') ? 'bg-primary text-white px-3 py-1 rounded-md' : '' }}"><a
+                    href="/about" class="hover:text-gray-400">About</a></li>
+            <li>
+                <a href="{{ route('logout') }}"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    class="text-red-500 px-4 py-2 rounded-[4px]">Logout</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+            </li>
         </ul>
     </div>
+    @endauth
 
     <div class="md:block hidden">
         <img src="{{ asset('logo_bumn.png') }}" alt="" class="w-28 h-auto">

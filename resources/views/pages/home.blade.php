@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-PLN
+PLN Indonesia Power
 @endsection
 
 @section('content')
@@ -36,7 +36,7 @@ PLN
             <img src="{{ asset('phone.png') }}" alt="" class="w-[43vw]">
         </div>
     </div>
-    <div class="relative h-6 bg-secondary z-40 md:flex hidden">
+    <div class="relative h-6 bg-secondary z-40">
     </div>
 </div>
 @endsection

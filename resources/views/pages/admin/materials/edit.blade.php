@@ -45,7 +45,7 @@ Create Material
             </div>
             <div class="grid grid-cols-3 gap-4 ">
                 <div class="mt-6 flex flex-col gap-2">
-                    <label for="">Tanggal Penempatan Terakhir</label>
+                    <label for="">Tanggal Pemasangan Terakhir</label>
                     <input type="date" name="last_placement_date"
                         class="w-full border px-4 py-2 rounded-md bg-transparent"
                         value="{{ $materials->last_placement_date }}" required />
