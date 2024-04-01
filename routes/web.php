@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [BaseController::class, 'index']);
+Route::get('/', [BaseController::class, 'index'])->name('home');
 Route::get('/materials', [BaseController::class, 'materials']);
 Route::get('/materials/{slug}', [BaseController::class, 'materialsDetail'])->name('material-detail');
 Route::get('/sop', [BaseController::class, 'sop']);
@@ -27,7 +27,7 @@ Route::get('/instruksi-kerja', [BaseController::class, 'instruksiKerja']);
 Route::get('/about', [BaseController::class, 'about']);
 
 Route::prefix('admin')
-    ->middleware(['auth'])
+    ->middleware(['auth', 'isAdmin'])
     ->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index']);
 
@@ -53,6 +53,7 @@ Route::prefix('admin')
         Route::get('materials/filter', [MaterialsController::class, 'filter'])->name('index-filter');
         Route::get('materials/fast-moving', [MaterialsController::class, 'fastMoving'])->name('index-fast-moving');
         Route::get('materials/critical', [MaterialsController::class, 'critical'])->name('index-critical');
+        Route::get('materials/slow-moving', [MaterialsController::class, 'slowMoving'])->name('index-slow-moving');
         Route::get('materials/create', [MaterialsController::class, 'create'])->name('create-materials');
         Route::get('materials/import-excel', [MaterialsController::class, 'importIndex'])->name('index-import-materials');
         Route::post('materials/create', [MaterialsController::class, 'store'])->name('store-materials');
@@ -60,6 +61,7 @@ Route::prefix('admin')
         
         Route::get('materials/get-data-filter', [MaterialsController::class, 'getDataFilter'])->name('get-data-filter');
         Route::get('materials/get-data-fast-moving', [MaterialsController::class, 'getDataFastMoving'])->name('get-data-fast-moving');
+        Route::get('materials/get-data-slow-moving', [MaterialsController::class, 'getDataSlowMoving'])->name('get-data-slow-moving');
         Route::get('materials/get-data-critical', [MaterialsController::class, 'getDataCritical'])->name('get-data-critical');
         
         Route::get('materials/detail/{id}', [MaterialsController::class, 'edit'])->name('edit-material');

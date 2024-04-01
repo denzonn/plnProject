@@ -28,6 +28,7 @@ Materials
                 class="select select-bordered border-gray-300 bg-transparent w-full max-w-xs text-base">
                 <option value="filter">Filter</option>
                 <option value="fastMoving">Fast Moving</option>
+                <option value="slowMoving">Slow Moving</option>
                 <option value="critical">Critical</option>
             </select>
         </div>
@@ -49,6 +50,21 @@ Materials
         </div>
         <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="fastMoving" style="display: none;">
             @forelse ($fastMoving as $item)
+            <a href="{{ route('material-detail',  $item->slug) }}" class="w-full rounded-md">
+                <img src="{{ $item->images->isNotEmpty() ? Storage::url($item->images->first()->file) : '' }}"
+                    alt="No Image"
+                    class="{{ $item->images->isNotEmpty() ? 'w-full h-60 object-cover rounded-md' : 'bg-gray-100 border-none outline-none h-60 w-full rounded-md' }}">
+                <div class="text-center mt-2 text-gray-600">{{ $item->name }}</div>
+            </a>
+            @empty
+            <div class="w-full flex flex-col justify-center items-center gap-4 mt-8 col-span-full">
+                <img src="{{ asset('no_data.svg') }}" alt="" class="mx-auto w-52">
+                <div>Tidak ada Data</div>
+            </div>
+            @endforelse
+        </div>
+        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="slowMoving" style="display: none;">
+            @forelse ($slowMoving as $item)
             <a href="{{ route('material-detail',  $item->slug) }}" class="w-full rounded-md">
                 <img src="{{ $item->images->isNotEmpty() ? Storage::url($item->images->first()->file) : '' }}"
                     alt="No Image"

@@ -21,6 +21,9 @@ class MaterialsSeeder extends Seeder
                 'name' => 'Fast Mooving',
             ],
             [
+                'name' => 'Slow Moving',
+            ],
+            [
                 'name' => 'Critical',
             ],
         ]);

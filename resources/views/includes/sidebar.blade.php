@@ -25,6 +25,7 @@
                 <ul class="mt-2">
                     <li class="px-2 py-1 rounded-md hover:bg-primary hover:text-white  transition"><a href="/admin/materials/filter" class="px-2 py-1">Filter</a></li>
                     <li class="px-2 py-1 rounded-md hover:bg-primary hover:text-white  transition"><a href="/admin/materials/fast-moving" class="px-2 py-1">Fast Moving</a></li>
+                    <li class="px-2 py-1 rounded-md hover:bg-primary hover:text-white  transition"><a href="/admin/materials/slow-moving" class="px-2 py-1">Slow Moving</a></li>
                     <li class="px-2 py-1 rounded-md hover:bg-primary hover:text-white  transition"><a href="/admin/materials/critical" class="px-2 py-1">Critical</a></li>
                 </ul>
             </details>

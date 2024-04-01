@@ -52,6 +52,18 @@ class MaterialsController extends Controller
 
     public function getDataCritical()
     {
+        $materials = Materials::where('materials_type_id', 4);
+
+        return DataTables::of($materials)->make(true);
+    }
+
+    public function slowMoving()
+    {
+        return view('pages.admin.materials.slowMoving.index');
+    }
+
+    public function getDataSlowMoving()
+    {
         $materials = Materials::where('materials_type_id', 3);
 
         return DataTables::of($materials)->make(true);
@@ -102,7 +114,7 @@ class MaterialsController extends Controller
             ]);
         }
 
-        return redirect()->route('index-filter');
+        return redirect()->back();
     }
 
     /**
@@ -148,6 +160,7 @@ class MaterialsController extends Controller
 
         if ($request->hasFile('photos')) {
             $imageMaterial = MaterialImage::where('materials_id', $material->id)->get();
+            
             foreach ($imageMaterial as $image) {
                 Storage::disk('public')->delete($image->file);
                 $image->delete();
@@ -190,7 +203,7 @@ class MaterialsController extends Controller
 
         $material->delete();
 
-        return redirect()->route('index-filter');
+        return redirect()->back();
     }
 
     public function importIndex() {

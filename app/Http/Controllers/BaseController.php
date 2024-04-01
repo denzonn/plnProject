@@ -22,7 +22,8 @@ class BaseController extends Controller
     {
         $filter = Materials::with('images')->where('materials_type_id', 1)->get();
         $fastMoving = Materials::with('images')->where('materials_type_id', 2)->get();
-        $critical = Materials::with('images')->where('materials_type_id', 3)->get();
+        $slowMoving = Materials::with('images')->where('materials_type_id', 3)->get();
+        $critical = Materials::with('images')->where('materials_type_id', 4)->get();
 
         $keyword = $request->input('keyword');
         $materials = Materials::with('images')->where('name', 'like', '%' . $keyword . '%')->get();
@@ -37,6 +38,7 @@ class BaseController extends Controller
             return view('pages.materials', [
                 'filter' => $filter,
                 'fastMoving' => $fastMoving,
+                'slowMoving' => $slowMoving,
                 'critical' => $critical
             ]);
         }

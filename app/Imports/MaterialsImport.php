@@ -28,8 +28,10 @@ class MaterialsImport implements ToCollection
                 $type = 1;
             } else if($row['1'] === 'Fast Moving'){
                 $type = 2;
-            } else {
+            } else if($row['1'] === 'Slow Moving'){
                 $type = 3;
+            } else {
+                $type = 4;
             }
 
             // Buat model Materials dari setiap baris data

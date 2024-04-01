@@ -34,7 +34,10 @@ SOP
                 </div>
             </a>
             @empty
-
+            <div class="w-full flex flex-col justify-center items-center gap-4 mt-8 col-span-full">
+                <img src="{{ asset('no_data.svg') }}" alt="" class="mx-auto w-52">
+                <div>Tidak ada Data</div>
+            </div>
             @endforelse
         </div>
     </div>
