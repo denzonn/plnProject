@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IKController;
 use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\sendEmailNotificationController;
 use App\Http\Controllers\SOPController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,8 @@ Route::get('/materials/{slug}', [BaseController::class, 'materialsDetail'])->nam
 Route::get('/sop', [BaseController::class, 'sop']);
 Route::get('/instruksi-kerja', [BaseController::class, 'instruksiKerja']);
 Route::get('/about', [BaseController::class, 'about']);
+
+Route::get('/sendEmailNotification', [sendEmailNotificationController::class, 'index'])->name('sendEmailNotification');
 
 Route::prefix('admin')
     ->middleware(['auth', 'isAdmin'])

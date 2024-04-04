@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Imports\MaterialsImport;
 use App\Models\MaterialImage;
-use App\Models\MaterialImages;
 use App\Models\Materials;
 use App\Models\MaterialsType;
 use Yajra\DataTables\DataTables;
@@ -114,6 +113,8 @@ class MaterialsController extends Controller
             ]);
         }
 
+        notify()->success('Succesfully Create Materials');
+
         return redirect()->back();
     }
 
@@ -160,7 +161,7 @@ class MaterialsController extends Controller
 
         if ($request->hasFile('photos')) {
             $imageMaterial = MaterialImage::where('materials_id', $material->id)->get();
-            
+
             foreach ($imageMaterial as $image) {
                 Storage::disk('public')->delete($image->file);
                 $image->delete();
@@ -184,6 +185,13 @@ class MaterialsController extends Controller
             }
         }
 
+        notify()->success('Succesfully Update Materials');
+
+        if ($data['new_stock'] <= $data['limit_stock']) {
+            $sendEmailNotificationController = new sendEmailNotificationController();
+            $sendEmailNotificationController->index();
+        }
+
         return redirect()->route('index-filter');
     }
 
@@ -203,16 +211,21 @@ class MaterialsController extends Controller
 
         $material->delete();
 
+        notify()->success('Succesfully Delete Materials');
+
         return redirect()->back();
     }
 
-    public function importIndex() {
+    public function importIndex()
+    {
         return view('pages.admin.materials.import.index');
     }
 
     public function import(Request $request)
     {
         Excel::import(new MaterialsImport, $request->file('file'));
+
+        notify()->success('Succesfully Import Materials');
 
         return redirect('/admin/materials/filter')->with('success', 'All good!');
     }

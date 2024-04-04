@@ -54,7 +54,36 @@
     </div>
     @endauth
 
-    <div class="md:block hidden">
-        <img src="{{ asset('logo_bumn.png') }}" alt="" class="w-28 h-auto">
+    <div class="md:flex flex-row gap-8 hidden relative">
+        @php
+        $materials = App\Models\Materials::whereColumn('new_stock', '<=', 'limit_stock' )->latest()->take(3)->get();
+        @endphp
+
+            @auth
+            <div class="relative">
+                @if($materials->isNotEmpty())
+                <div class="notification-icon"><i class="fa-solid fa-bell text-primary text-xl"></i>
+                    <div class="absolute -top-1 -right-1 p-[6px] bg-red-500 rounded-full"></div>
+                </div>
+                @else
+                <div class="notification-icon"><i class="fa-regular fa-bell text-primary text-xl"></i></div>
+                @endif
+
+                <div
+                    class="popup w-64 hidden rounded-md bg-white shadow-md p-4 absolute top-12 right-0 z-50 text-center text-sm">
+                    <div class="text-primary text-base font-semibold">Material Reaches the Limit</div>
+                    <div class="text-right mt-1">
+                        <a href="/materials">See all...</a>
+                    </div>
+                    <div class="space-y-3 mt-3">
+                        @foreach($materials as $material)
+                        <p>{{ $material->name }} - {{ $material->new_stock }} stock left</p>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @endauth
+
+            <img src="{{ asset('logo_bumn.png') }}" alt="" class="w-28 h-auto">
     </div>
 </nav>

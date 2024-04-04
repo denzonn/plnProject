@@ -15,6 +15,7 @@ class Materials extends Model
         'spesification',
         'materials_type_id',
         'new_stock',
+        'limit_stock',
         'used_stock',
         'last_placement_date',
         'purchase_link',

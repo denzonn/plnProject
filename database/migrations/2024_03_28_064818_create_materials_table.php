@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug');
             $table->longText('spesification');
             $table->integer('new_stock');
+            $table->integer('limit_stock');
             $table->integer('used_stock');
             $table->foreignId('materials_type_id')->constrained('materials_type')->onDelete('cascade');
             $table->date('last_placement_date');

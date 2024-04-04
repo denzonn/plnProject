@@ -171,6 +171,7 @@ return [
 
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Mckenziearts\Notify\LaravelNotifyServiceProvider::class
     ])->toArray(),
 
     /*

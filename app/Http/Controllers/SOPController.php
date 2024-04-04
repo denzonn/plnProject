@@ -55,6 +55,8 @@ class SOPController extends Controller
 
         SOP::create($data);
 
+        notify()->success('Succesfully Create SOP');
+
         return redirect()->route('index-sop');
     }
 
@@ -105,6 +107,7 @@ class SOPController extends Controller
         }
 
         $sop->update($data);
+        notify()->success('Succesfully Update SOP');
 
         return redirect()->route('index-sop');
     }
@@ -121,6 +124,7 @@ class SOPController extends Controller
         }
 
         $sop->delete();
+        notify()->success('Succesfully Delete SOP');
 
         return redirect()->route('index-sop');
     }

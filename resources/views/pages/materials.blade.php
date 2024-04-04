@@ -16,7 +16,9 @@ Materials
                     <input type="text" id="keyword" name="keyword" placeholder="Search Material"
                         class="w-10/12 md:px-4 md:py-3 px-2 py-1 bg-transparent border rounded-md focus:outline-none focus:border">
                     <button type="submit" id="searchBtn"
-                        class="w-2/12 px-4 py-2 bg-primary rounded-md text-white text-lg"><i class="fa-solid fa-magnifying-glass md:hidden"></i><span class="md:block hidden">Search</span></button>
+                        class="w-2/12 px-4 py-2 bg-primary rounded-md text-white text-lg"><i
+                            class="fa-solid fa-magnifying-glass md:hidden"></i><span
+                            class="md:block hidden">Search</span></button>
                 </form>
             </div>
         </div>
@@ -26,6 +28,7 @@ Materials
         <div class="mb-8 text-end">
             <select id="materialType"
                 class="select select-bordered border-gray-300 bg-transparent w-full max-w-xs text-base">
+                <option value="limit">Material Limit Stock</option>
                 <option value="filter">Filter</option>
                 <option value="fastMoving">Fast Moving</option>
                 <option value="slowMoving">Slow Moving</option>
@@ -33,7 +36,7 @@ Materials
             </select>
         </div>
 
-        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="filter">
+        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="filter" style="display: none;">
             @forelse ($filter as $item)
             <a href="{{ route('material-detail',  $item->slug) }}" class="w-full rounded-md">
                 <img src="{{ $item->images->isNotEmpty() ? Storage::url($item->images->first()->file) : '' }}"
@@ -48,7 +51,8 @@ Materials
             </div>
             @endforelse
         </div>
-        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="fastMoving" style="display: none;">
+        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="fastMoving"
+            style="display: none;">
             @forelse ($fastMoving as $item)
             <a href="{{ route('material-detail',  $item->slug) }}" class="w-full rounded-md">
                 <img src="{{ $item->images->isNotEmpty() ? Storage::url($item->images->first()->file) : '' }}"
@@ -63,7 +67,8 @@ Materials
             </div>
             @endforelse
         </div>
-        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="slowMoving" style="display: none;">
+        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="slowMoving"
+            style="display: none;">
             @forelse ($slowMoving as $item)
             <a href="{{ route('material-detail',  $item->slug) }}" class="w-full rounded-md">
                 <img src="{{ $item->images->isNotEmpty() ? Storage::url($item->images->first()->file) : '' }}"
@@ -78,7 +83,8 @@ Materials
             </div>
             @endforelse
         </div>
-        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="critical" style="display: none;">
+        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="critical"
+            style="display: none;">
             @forelse ($critical as $item)
             <a href="{{ route('material-detail',  $item->slug) }}" class="w-full rounded-md">
                 <img src="{{ $item->images->isNotEmpty() ? Storage::url($item->images->first()->file) : '' }}"
@@ -92,6 +98,40 @@ Materials
                 <div>Tidak ada Data</div>
             </div>
             @endforelse
+        </div>
+        <div class="w-full material-container" data-type="limit">
+            <div class="overflow-x-auto">
+                <table class="table">
+                    <!-- head -->
+                    <thead class="text-primary text-lg">
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Stock</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-400">
+                        @forelse ($limit as $index => $item)
+                        <tr>
+                            <th>{{ $index + 1 }}</th>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $item->new_stock }} stock</td>
+                            <td>
+                                <a href="{{ route('material-detail',  $item->slug) }}">
+                                    <i class="fa-regular fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        @empty
+                        <div class="w-full flex flex-col justify-center items-center gap-4 mt-8 col-span-full">
+                            <img src="{{ asset('no_data.svg') }}" alt="" class="mx-auto w-52">
+                            <div>Tidak ada Data</div>
+                        </div>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -114,6 +154,7 @@ Materials
         });
     });
 </script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('searchBtn').addEventListener('click', function() {

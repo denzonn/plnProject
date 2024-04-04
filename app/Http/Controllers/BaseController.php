@@ -24,6 +24,7 @@ class BaseController extends Controller
         $fastMoving = Materials::with('images')->where('materials_type_id', 2)->get();
         $slowMoving = Materials::with('images')->where('materials_type_id', 3)->get();
         $critical = Materials::with('images')->where('materials_type_id', 4)->get();
+        $limit = Materials::whereColumn('new_stock', '<=', 'limit_stock' )->latest()->get();
 
         $keyword = $request->input('keyword');
         $materials = Materials::with('images')->where('name', 'like', '%' . $keyword . '%')->get();
@@ -39,7 +40,8 @@ class BaseController extends Controller
                 'filter' => $filter,
                 'fastMoving' => $fastMoving,
                 'slowMoving' => $slowMoving,
-                'critical' => $critical
+                'critical' => $critical,
+                'limit' => $limit,
             ]);
         }
     }

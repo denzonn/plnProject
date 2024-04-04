@@ -26,10 +26,14 @@ Create Material
                     </select>
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-4 ">
+            <div class="grid grid-cols-3 gap-4 ">
                 <div class="mt-6 flex flex-col gap-2">
                     <label for="">Stok Material Baru</label>
                     <input type="number" placeholder="Masukkan Stock Material Baru" name="new_stock" class="w-full border px-4 py-2 rounded-md bg-transparent" required />
+                </div>
+                <div class="mt-6 flex flex-col gap-2">
+                    <label for="">Limit Stok Material</label>
+                    <input type="number" placeholder="Masukkan Limit Stock Material " name="limit_stock" class="w-full border px-4 py-2 rounded-md bg-transparent" required />
                 </div>
                 <div class="mt-6 flex flex-col gap-2">
                     <label for="">Stok Material Bekas</label>

@@ -18,7 +18,7 @@ class MaterialsImport implements ToCollection
     {
         foreach ($rows as $row) {
             // Lakukan validasi atau manipulasi data
-            $excelDate = intval($row['5']);
+            $excelDate = intval($row['6']);
             $unixDate = ($excelDate - 25569) * 86400;
             $date = date('Y-m-d', $unixDate);
 
@@ -40,10 +40,11 @@ class MaterialsImport implements ToCollection
                 'slug'    => \Str::slug($row['0']),
                 'spesification' => $row['2'],
                 'new_stock' => $row['3'],
-                'used_stock' => $row['4'],
+                'limit_stock' => $row['4'],
+                'used_stock' => $row['5'],
                 'materials_type_id' => $type,
                 'last_placement_date' => $date,
-                'purchase_link' => $row['6'],
+                'purchase_link' => $row['7'],
             ]);
 
             Materials::create($material);

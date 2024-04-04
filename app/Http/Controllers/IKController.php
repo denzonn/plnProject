@@ -55,6 +55,8 @@ class IKController extends Controller
 
         IK::create($data);
 
+        notify()->success('Succesfully Create Instruksi Kerja');
+
         return redirect()->route('index-ik');
     }
 
@@ -106,6 +108,8 @@ class IKController extends Controller
 
         $ik->update($data);
 
+        notify()->success('Succesfully Update Instruksi Kerja');
+
         return redirect()->route('index-ik');
     }
 
@@ -121,6 +125,8 @@ class IKController extends Controller
         }
 
         $ik->delete();
+
+        notify()->success('Succesfully Delete Instruksi Kerja');
 
         return redirect()->route('index-ik');
     }

@@ -14,7 +14,7 @@
     <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
 
-    <link rel="stylesheet" href="{{ asset('build/assets/app-DB-ZkGCq.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/assets/app-C9U-EhE2.css') }}">
 
     @stack('prepend-style')
     @include('includes.style')
@@ -39,6 +39,9 @@
     <div class="relative top-0 left-[25vw] py-10 h-screen w-[72vw]">
         @yield('content')
     </div>
+
+    <x-notify::notify />
+    @notifyJs
 
     @stack('prepend-script')
     @include('includes.script')
