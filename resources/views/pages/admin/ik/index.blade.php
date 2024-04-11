@@ -27,10 +27,21 @@
                             class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Action
                         </th>
+                        <th scope="col">
+                            <button class="bg-red-500 text-white rounded-md px-4 py-1 text-sm" type="button"
+                                id="deleteSelected">Delete Selected</button>
+                        </th>
                     </tr>
                 </thead>
             </table>
 
+            <form id="deleteForm" action="{{ route('ik.delete-selected') }}" method="POST" class="hidden">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="selectedIds[]" value="">
+                <button type="submit" class="bg-red-500 text-white rounded-md px-4 py-1 text-sm" id="deleteSelected">Delete
+                    Selected</button>
+            </form>
         </div>
     </div>
 @endsection
@@ -80,10 +91,29 @@
                                 '</form>' +
                                 '</div>';
                         }
-                    }
-
+                    },
+                    {data: 'id', render: function(data) {
+                        return '<input type="checkbox" class="checkbox w-5 h-5 border-gray-300" value="' + data + '" />'
+                    }},
                 ]
             })
+
+            $('#deleteSelected').on('click', function() {
+                let selectedCheckbox = [];
+                $('input.checkbox:checked').each(function() {
+                    selectedCheckbox.push($(this).val());
+                });
+            
+                if (selectedCheckbox.length === 0) {
+                    alert('Tidak ada item yang dipilih untuk dihapus.');
+                } else {
+                    if(confirm("Are you sure you want to Delete this data?"))
+                        {
+                            $('#deleteForm input[name="selectedIds[]"]').val(selectedCheckbox);
+                            $('#deleteForm').submit();
+                        }
+                }
+            });
         });
     </script>
 @endpush

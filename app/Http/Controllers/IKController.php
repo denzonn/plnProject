@@ -130,4 +130,19 @@ class IKController extends Controller
 
         return redirect()->route('index-ik');
     }
+
+    public function deleteSelected(Request $request)
+    {
+        $selectedIdsString = $request->input('selectedIds')[0]; 
+        $selectedIdsArray = explode(',', $selectedIdsString);
+
+        if (!empty($selectedIdsArray)) {
+            IK::whereIn('id', $selectedIdsArray)->delete();
+
+            notify()->success('Succesfully Delete SOP');
+            return redirect()->back();
+        }
+
+        return notify()->success('Please Select SOP');
+    }
 }

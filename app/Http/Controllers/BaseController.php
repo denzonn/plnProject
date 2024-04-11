@@ -6,6 +6,7 @@ use App\Models\IK;
 use App\Models\Materials;
 use App\Models\SOP;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class BaseController extends Controller
 {
@@ -24,8 +25,7 @@ class BaseController extends Controller
         $fastMoving = Materials::with('images')->where('materials_type_id', 2)->get();
         $slowMoving = Materials::with('images')->where('materials_type_id', 3)->get();
         $critical = Materials::with('images')->where('materials_type_id', 4)->get();
-        $limit = Materials::whereColumn('new_stock', '<=', 'limit_stock' )->latest()->get();
-
+        
         $keyword = $request->input('keyword');
         $materials = Materials::with('images')->where('name', 'like', '%' . $keyword . '%')->get();
 
@@ -41,7 +41,6 @@ class BaseController extends Controller
                 'fastMoving' => $fastMoving,
                 'slowMoving' => $slowMoving,
                 'critical' => $critical,
-                'limit' => $limit,
             ]);
         }
     }
@@ -64,22 +63,9 @@ class BaseController extends Controller
         return view('pages.material-detail', compact('data', 'firstImage', 'otherImage', 'similarData'));
     }
 
-    public function sop(Request $request)
+    public function sop()
     {
-        $data = SOP::all();
-
-        $keyword = $request->input('keyword');
-        $sop = SOP::where('name', 'like', '%' . $keyword . '%')->get();
-
-        if ($keyword === null) {
-            return view('pages.sop', compact('data'));
-        }
-
-        if ($keyword) {
-            return view('pages.sop-search', compact('sop'));
-        } else {
-            return view('pages.sop', compact('data'));
-        }
+        return view('pages.sop');
     }
 
     public function instruksiKerja(Request $request) {
@@ -102,5 +88,11 @@ class BaseController extends Controller
     public function about()
     {
         return view('pages.about');
+    }
+
+    public function getDataLimit(){
+        $limit = Materials::orderBy('updated_at', 'desc')->whereColumn('new_stock', '<=', 'limit_stock')->get();
+
+        return DataTables::of($limit)->make(true);
     }
 }

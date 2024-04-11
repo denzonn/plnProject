@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Http\Controllers\sendEmailNotificationController;
 use App\Models\Materials;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -24,11 +25,11 @@ class MaterialsImport implements ToCollection
 
             $type = '';
 
-            if($row['1'] === 'Filter'){
+            if ($row['1'] === 'Filter') {
                 $type = 1;
-            } else if($row['1'] === 'Fast Moving'){
+            } else if ($row['1'] === 'Fast Moving') {
                 $type = 2;
-            } else if($row['1'] === 'Slow Moving'){
+            } else if ($row['1'] === 'Slow Moving') {
                 $type = 3;
             } else {
                 $type = 4;
@@ -46,6 +47,11 @@ class MaterialsImport implements ToCollection
                 'last_placement_date' => $date,
                 'purchase_link' => $row['7'],
             ]);
+
+            if ($row['3'] <= $row['4']) {
+                $sendEmailNotificationController = new sendEmailNotificationController();
+                $sendEmailNotificationController->index();
+            }
 
             Materials::create($material);
         }

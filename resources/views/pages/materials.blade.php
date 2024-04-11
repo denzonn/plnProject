@@ -36,7 +36,8 @@ Materials
             </select>
         </div>
 
-        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="filter" style="display: none;">
+        <div class="w-full grid md:grid-cols-4 grid-cols-1 gap-4 material-container" data-type="filter"
+            style="display: none;">
             @forelse ($filter as $item)
             <a href="{{ route('material-detail',  $item->slug) }}" class="w-full rounded-md">
                 <img src="{{ $item->images->isNotEmpty() ? Storage::url($item->images->first()->file) : '' }}"
@@ -100,38 +101,25 @@ Materials
             @endforelse
         </div>
         <div class="w-full material-container" data-type="limit">
-            <div class="overflow-x-auto">
-                <table class="table">
-                    <!-- head -->
-                    <thead class="text-primary text-lg">
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Stock</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-gray-400">
-                        @forelse ($limit as $index => $item)
-                        <tr>
-                            <th>{{ $index + 1 }}</th>
-                            <td>{{ $item->name }}</td>
-                            <td>{{ $item->new_stock }} stock</td>
-                            <td>
-                                <a href="{{ route('material-detail',  $item->slug) }}">
-                                    <i class="fa-regular fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <div class="w-full flex flex-col justify-center items-center gap-4 mt-8 col-span-full">
-                            <img src="{{ asset('no_data.svg') }}" alt="" class="mx-auto w-52">
-                            <div>Tidak ada Data</div>
-                        </div>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            <table id="limitTable" class="w-full text-left">
+                <thead>
+                    <tr>
+                        <th scope="col"
+                            class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            No</th>
+                        <th scope="col"
+                            class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Material Name</th>
+                        <th scope="col"
+                            class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Stock
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        </th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
@@ -177,5 +165,45 @@ Materials
             xhr.send();
         });
     });
+</script>
+@endpush
+
+@push('addon-script')
+<script>
+    jQuery(document).ready(function($) {
+            $('#limitTable').DataTable({
+                processing: true,
+                ajax: "{{ route('get-data-limit') }}",
+                columns: [{
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'new_stock',
+                        name: 'new_stock',
+                        render: function(data){
+                            return data + ' pcs'
+                        }
+                    },
+                    {
+                        data: 'slug',
+                        render: function(data) {
+                            let materialDetail = '{{ route('material-detail', ':slug') }}';
+                            materialDetail = materialDetail.replace(':slug', data);
+                            return '<div class="flex">' +
+                                '<a href="' + materialDetail +
+                                '" class="px-3 text-sm py-1 rounded-md text-white mr-2" data-id="' +
+                                data + '"><i class="fa-solid fa-eye text-gray-500"></i></a>'
+                        }
+                    }
+                ]
+            })
+        });
 </script>
 @endpush

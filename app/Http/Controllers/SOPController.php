@@ -128,4 +128,19 @@ class SOPController extends Controller
 
         return redirect()->route('index-sop');
     }
+
+    public function deleteSelected(Request $request)
+    {
+        $selectedIdsString = $request->input('selectedIds')[0]; 
+        $selectedIdsArray = explode(',', $selectedIdsString);
+
+        if (!empty($selectedIdsArray)) {
+            SOP::whereIn('id', $selectedIdsArray)->delete();
+
+            notify()->success('Succesfully Delete SOP');
+            return redirect()->back();
+        }
+
+        return notify()->success('Please Select SOP');
+    }
 }

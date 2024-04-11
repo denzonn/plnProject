@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialsExport;
 use App\Imports\MaterialsImport;
 use App\Models\MaterialImage;
 use App\Models\Materials;
@@ -114,6 +115,11 @@ class MaterialsController extends Controller
         }
 
         notify()->success('Succesfully Create Materials');
+
+        if ($data['new_stock'] <= $data['limit_stock']) {
+            $sendEmailNotificationController = new sendEmailNotificationController();
+            $sendEmailNotificationController->index();
+        }
 
         return redirect()->back();
     }
@@ -228,5 +234,25 @@ class MaterialsController extends Controller
         notify()->success('Succesfully Import Materials');
 
         return redirect('/admin/materials/filter')->with('success', 'All good!');
+    }
+
+    public function export()
+    {
+        return Excel::download(new MaterialsExport, 'materials.xlsx');
+    }
+
+    public function deleteSelected(Request $request)
+    {
+        $selectedIdsString = $request->input('selectedIds')[0]; 
+        $selectedIdsArray = explode(',', $selectedIdsString);
+
+        if (!empty($selectedIdsArray)) {
+            Materials::whereIn('id', $selectedIdsArray)->delete();
+
+            notify()->success('Succesfully Delete Materials');
+            return redirect()->back();
+        }
+
+        return notify()->success('Please Select Material');
     }
 }

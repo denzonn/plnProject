@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Dashboard - Materials Filter
+Dashboard - Materials
 @endsection
 
 @section('content')
@@ -10,14 +10,19 @@
         <a href="{{ route('create-materials') }}" class="px-6 py-3 bg-primary rounded-md text-white">
             Tambah Material
         </a>
-    
-        <a href="{{ route('index-import-materials') }}" class="px-6 py-3 bg-green-500 rounded-md text-white">
-            Import Excel 
-        </a>
+
+        <div class="flex flex-row gap-4">
+            <a href="{{ route('export-materials') }}" class="px-6 py-3 bg-yellow-500 rounded-md text-white">
+                Export Excel
+            </a>
+            <a href="{{ route('index-import-materials') }}" class="px-6 py-3 bg-green-500 rounded-md text-white">
+                Import Excel
+            </a>
+        </div>
     </div>
 
     <div class="mt-8 font-semibold">
-        Data Material - Filter
+        Data Material - Critical
     </div>
 
     <div class="pt-4">
@@ -25,26 +30,37 @@
             <thead class="text-left">
                 <tr>
                     <th scope="col"
-                        class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">
                         No</th>
                     <th scope="col"
-                        class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-6/12">
                         Nama Material</th>
                     <th scope="col"
-                        class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        class="px-6 py-3 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-2/12">
                         Action
+                    </th>
+                    <th scope="col">
+                        <button class="bg-red-500 text-white rounded-md px-4 py-1 text-sm" type="button"
+                            id="deleteSelected">Delete Selected</button>
                     </th>
                 </tr>
             </thead>
         </table>
 
+        <form id="deleteForm" action="{{ route('materials.delete-selected') }}" method="POST" class="hidden">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="selectedIds[]" value="">
+            <button type="submit" class="bg-red-500 text-white rounded-md px-4 py-1 text-sm" id="deleteSelected">Delete Selected</button>
+        </form>
+        
     </div>
 </div>
 @endsection
 
 @push('addon-script')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             $('#materialTable').DataTable({
                 processing: true,
                 ajax: "{{ route('get-data-filter') }}",
@@ -76,10 +92,30 @@
                                 '</form>' +
                                 '</div>';
                         }
-                    }
-
+                    },
+                    {data: 'id', render: function(data) {
+                        return '<input type="checkbox" class="checkbox w-5 h-5 border-gray-300" value="' + data + '" />'
+                    }},
                 ]
-            })
+            });
+
+            $('#deleteSelected').on('click', function() {
+                let selectedCheckbox = [];
+                $('input.checkbox:checked').each(function() {
+                    selectedCheckbox.push($(this).val());
+                });
+            
+                if (selectedCheckbox.length === 0) {
+                    alert('Tidak ada item yang dipilih untuk dihapus.');
+                } else {
+                    if(confirm("Are you sure you want to Delete this data?"))
+                        {
+                            $('#deleteForm input[name="selectedIds[]"]').val(selectedCheckbox);
+                            $('#deleteForm').submit();
+                        }
+                }
+            });
         });
-    </script>
+</script>
+
 @endpush
