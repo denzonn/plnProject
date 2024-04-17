@@ -198,7 +198,15 @@ class MaterialsController extends Controller
             $sendEmailNotificationController->index();
         }
 
-        return redirect()->route('index-filter');
+        if($material->materials_type_id === '1'){
+            return redirect()->route('index-filter');
+        } elseif($material->materials_type_id === '2'){
+            return redirect()->route('index-fast-moving');
+        } elseif($material->materials_type_id === '3'){
+            return redirect()->route('index-slow-moving');
+        } else {
+            return redirect()->route('index-critical');
+        }
     }
 
     /**
@@ -243,7 +251,7 @@ class MaterialsController extends Controller
 
     public function deleteSelected(Request $request)
     {
-        $selectedIdsString = $request->input('selectedIds')[0]; 
+        $selectedIdsString = $request->input('selectedIds')[0];
         $selectedIdsArray = explode(',', $selectedIdsString);
 
         if (!empty($selectedIdsArray)) {

@@ -23,7 +23,7 @@ class MaterialsExport implements FromCollection, WithHeadings
                 'ID' => $material->id,
                 'Name' => $material->name,
                 'Materials Type' => $material->materials_type ? $material->materials_type->name : null,
-                'Specification' => $material->spesification,
+                'Specification' => strip_tags($material->spesification),
                 'New Stock' => $material->new_stock,
                 'Limit Stock' => $material->limit_stock,
                 'Used Stock' => $material->used_stock,

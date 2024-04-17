@@ -20,6 +20,10 @@
                         <div class="text-6xl font-semibold">{{ $fastMoving }} <span class="text-lg font-medium">data</span></div>
                     </div>
                     <div class="bg-[#adf7b6] rounded-md p-4 text-[#3e9b49]">
+                        <div class="text-2xl font-semibold">Slow Moving</div>
+                        <div class="text-6xl font-semibold">{{ $slowMoving }} <span class="text-lg font-medium">data</span></div>
+                    </div>
+                    <div class="bg-[#adf7b6] rounded-md p-4 text-[#3e9b49]">
                         <div class="text-2xl font-semibold">Critical</div>
                         <div class="text-6xl font-semibold">{{ $critical }} <span class="text-lg font-medium">data</span></div>
                     </div>
