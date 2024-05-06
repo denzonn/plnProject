@@ -45,7 +45,7 @@ Route::prefix('admin')
         Route::get('detail/{id}', [SOPController::class, 'edit'])->name('edit-sop');
         Route::put('edit-sop/{id}', [SOPController::class, 'update'])->name('update-sop');
         Route::delete('delete-sop/{id}', [SOPController::class, 'destroy'])->name('delete-sop');
-        
+
         //IK
         Route::get('ik', [IKController::class, 'index'])->name('index-ik');
         Route::get('create-ik', [IKController::class, 'create'])->name('create-ik');
@@ -64,19 +64,20 @@ Route::prefix('admin')
         Route::post('materials/create', [MaterialsController::class, 'store'])->name('store-materials');
         Route::post('materials/import', [MaterialsController::class, 'import'])->name('import-materials');
         Route::get('materials/export', [MaterialsController::class, 'export'])->name('export-materials');
-        
+
         Route::get('materials/get-data-filter', [MaterialsController::class, 'getDataFilter'])->name('get-data-filter');
         Route::get('materials/get-data-fast-moving', [MaterialsController::class, 'getDataFastMoving'])->name('get-data-fast-moving');
         Route::get('materials/get-data-slow-moving', [MaterialsController::class, 'getDataSlowMoving'])->name('get-data-slow-moving');
         Route::get('materials/get-data-critical', [MaterialsController::class, 'getDataCritical'])->name('get-data-critical');
-        
+
         Route::get('materials/detail/{id}', [MaterialsController::class, 'edit'])->name('edit-material');
         Route::put('materials/update/{id}', [MaterialsController::class, 'update'])->name('update-materials');
         Route::delete('materials/delete/{id}', [MaterialsController::class, 'destroy'])->name('delete-materials');
 
+        Route::get('/admin/materials/similar', [MaterialsController::class, 'getSimilarMaterial'])->name('get-material-similar');
         Route::delete('/admin/materials/delete-selected', [MaterialsController::class, 'deleteSelected'])->name('materials.delete-selected');
         Route::delete('/admin/sop/delete-selected', [SOPController::class, 'deleteSelected'])->name('sop.delete-selected');
         Route::delete('/admin/ik/delete-selected', [IKController::class, 'deleteSelected'])->name('ik.delete-selected');
     });
-    
+
 require __DIR__.'/auth.php';

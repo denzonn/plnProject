@@ -19,6 +19,7 @@ class Materials extends Model
         'used_stock',
         'last_placement_date',
         'purchase_link',
+        'selected_materials'
     ];
 
     public function materials_type()

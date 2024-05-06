@@ -53,7 +53,6 @@ Dashboard - Materials
             <input type="hidden" name="selectedIds[]" value="">
             <button type="submit" class="bg-red-500 text-white rounded-md px-4 py-1 text-sm" id="deleteSelected">Delete Selected</button>
         </form>
-        
     </div>
 </div>
 @endsection
@@ -63,6 +62,7 @@ Dashboard - Materials
     $(document).ready(function() {
             $('#materialTable').DataTable({
                 processing: true,
+                pageLength: 100,
                 ajax: "{{ route('get-data-fast-moving') }}",
                 columns: [{
                         data: null,
@@ -104,7 +104,7 @@ Dashboard - Materials
                 $('input.checkbox:checked').each(function() {
                     selectedCheckbox.push($(this).val());
                 });
-            
+
                 if (selectedCheckbox.length === 0) {
                     alert('Tidak ada item yang dipilih untuk dihapus.');
                 } else {

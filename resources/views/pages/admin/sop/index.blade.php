@@ -52,6 +52,7 @@
         $(document).ready(function() {
             $('#sopTable').DataTable({
                 processing: true,
+                pageLength: 100,
                 ajax: "{{ route('get-data') }}",
                 columns: [{
                         data: null,
@@ -104,7 +105,7 @@
                 $('input.checkbox:checked').each(function() {
                     selectedCheckbox.push($(this).val());
                 });
-            
+
                 if (selectedCheckbox.length === 0) {
                     alert('Tidak ada item yang dipilih untuk dihapus.');
                 } else {

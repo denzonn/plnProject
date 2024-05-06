@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('materials_type_id')->constrained('materials_type')->onDelete('cascade');
             $table->date('last_placement_date');
             $table->string('purchase_link');
+            $table->json('selected_materials')->nullable();
             $table->timestamps();
         });
     }

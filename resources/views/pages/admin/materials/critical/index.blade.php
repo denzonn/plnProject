@@ -64,6 +64,7 @@ Dashboard - Materials
     $(document).ready(function() {
             $('#materialTable').DataTable({
                 processing: true,
+                pageLength: 100,
                 ajax: "{{ route('get-data-critical') }}",
                 columns: [{
                         data: null,
@@ -105,7 +106,7 @@ Dashboard - Materials
                 $('input.checkbox:checked').each(function() {
                     selectedCheckbox.push($(this).val());
                 });
-            
+
                 if (selectedCheckbox.length === 0) {
                     alert('Tidak ada item yang dipilih untuk dihapus.');
                 } else {
@@ -116,8 +117,6 @@ Dashboard - Materials
                         }
                 }
             });
-            
-            
         });
 </script>
 

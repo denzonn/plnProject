@@ -121,7 +121,15 @@ class MaterialsController extends Controller
             $sendEmailNotificationController->index();
         }
 
-        return redirect()->back();
+        if ($request->input('materials_type_id') == 1) {
+            return redirect()->route('index-filter');
+        } else if ($request->input('materials_type_id') == 2) {
+            return redirect()->route('index-fast-moving');
+        } else if ($request->input('materials_type_id') == 3) {
+            return redirect()->route('index-slow-moving');
+        } else {
+            return redirect()->route('index-critical');
+        }
     }
 
     /**
@@ -141,10 +149,23 @@ class MaterialsController extends Controller
         $material_type = MaterialsType::all();
         $material_image = MaterialImage::where('materials_id', $id)->get();
 
+        $selectedMaterials = json_decode($material->selected_materials);
+
+        $selected = [];
+        if ($selectedMaterials) {
+            foreach ($selectedMaterials as $item) {
+                $selectedMaterial = Materials::where('id', $item)->first(); // Menggunakan first() karena kita hanya mengharapkan satu hasil
+                if ($selectedMaterial) {
+                    $selected[] = $selectedMaterial;
+                }
+            }
+        }
+
         return view('pages.admin.materials.edit', [
             'materials' => $material,
             'type' => $material_type,
-            'materials_image' => $material_image
+            'materials_image' => $material_image,
+            'selected' => $selected
         ]);
     }
 
@@ -156,14 +177,113 @@ class MaterialsController extends Controller
         $data = $request->all();
         $material = Materials::findOrFail($id);
 
+
         $this->validate($request, [
             'photos.*' => 'required|image|mimes:jpeg,png,jpg',
         ]);
 
         $slug = \Str::slug($request->name);
         $data['slug'] = $slug;
+        $selectedMaterials = $request->input('selectedMaterials');
 
-        $material->update($data);
+        $selected = json_encode($selectedMaterials);
+
+        $material->update([
+            ...$data,
+            'selected_materials' => $selected
+        ]);
+
+        $alreadySelectedMaterials = json_decode($material->selected_materials);
+
+        $newlySelectedMaterials = array_diff($alreadySelectedMaterials, $selectedMaterials);
+
+        if ($selectedMaterials) {
+            foreach ($selectedMaterials as $selectedMaterialId) {
+                // Ambil data material yang dipilih
+                $selectedMaterial = Materials::find($selectedMaterialId);
+
+                // Salin array selectedMaterials ke dalam variabel $selects
+                $selects = $selectedMaterials;
+
+                if ($selectedMaterial->selected_materials) {
+                    $dataWillNull = json_decode($selectedMaterial->selected_materials);
+
+                    foreach ($dataWillNull as $willNull) {
+                        $dataNull = Materials::find($willNull);
+
+                        if ($material->id != $dataNull->id) {
+                            if ($dataNull) {
+                                $dataNull->update([
+                                    'selected_materials' => null
+                                ]);
+                            }
+                        }
+                    }
+                    $selectedMaterial->update([
+                        'selected_materials' => null
+                    ]);
+                }
+
+                // Hapus ID bahan yang sedang diedit dari array $selects
+                $updatedSelectedMaterials = array_diff($selects, [$selectedMaterialId]);
+
+                // Tambahkan ID bahan yang sedang diedit ke dalam array $updatedSelectedMaterials
+                $updatedSelectedMaterials[] = strval($material->id);
+
+                // Ubah indeks array menjadi nilai-nilai yang berurutan
+                $updatedSelectedMaterials = array_values($updatedSelectedMaterials);
+
+                // Update selected_materials dari material yang dipilih
+                $selectedMaterial->update([
+                    'name' => $selectedMaterial->name,
+                    'slug' => $selectedMaterial->slug,
+                    'spesification' => $selectedMaterial->spesification,
+                    'materials_type_id' => $selectedMaterial->materials_type_id,
+                    'last_placement_data' => $selectedMaterial->last_placement_data,
+                    'selected_materials' => json_encode($updatedSelectedMaterials),
+                    'new_stock' => $request->input('new_stock'),
+                    'limit_stock' => $request->input('limit_stock'),
+                    'used_stock' => $request->input('used_stock'),
+                    'purchase_link' => $request->input('purchase_link')
+                ]);
+
+                if ($request->hasFile('photos')) {
+                    $imageMaterial = MaterialImage::where('materials_id', $selectedMaterial->id)->get();
+
+                    foreach ($imageMaterial as $image) {
+                        Storage::disk('public')->delete($image->file);
+                        $image->delete();
+                    }
+
+                    $photosSelected = [];
+                    if ($request->hasFile('photos')) {
+                        foreach ($request->file('photos') as $photo) {
+                            $extension = $photo->getClientOriginalExtension();
+                            $file_name = "material-" . $selectedMaterial->slug . "-" . uniqid() . "." . $extension;
+                            $path = $photo->storeAs('materials', $file_name, 'public');
+                            $photosSelected[] = $path;
+                        }
+                    }
+
+                    foreach ($photosSelected as $path) {
+                        MaterialImage::create([
+                            'file' => $path,
+                            'materials_id' => $selectedMaterial->id
+                        ]);
+                    }
+                }
+            }
+            if ($newlySelectedMaterials) {
+                foreach ($newlySelectedMaterials as $item) {
+                    $selectedMaterial = Materials::find($item);
+
+                    $selectedMaterial->update([
+                        'selected_materials' => null,
+                    ]);
+                }
+            }
+        }
+
 
         if ($request->hasFile('photos')) {
             $imageMaterial = MaterialImage::where('materials_id', $material->id)->get();
@@ -191,20 +311,23 @@ class MaterialsController extends Controller
             }
         }
 
-        notify()->success('Succesfully Update Materials');
 
         if ($data['new_stock'] <= $data['limit_stock']) {
             $sendEmailNotificationController = new sendEmailNotificationController();
             $sendEmailNotificationController->index();
         }
 
-        if($material->materials_type_id === '1'){
+        if ($material->materials_type_id === '1') {
+            notify()->success('Succesfully Update Materials');
             return redirect()->route('index-filter');
-        } elseif($material->materials_type_id === '2'){
+        } elseif ($material->materials_type_id === '2') {
+            notify()->success('Succesfully Update Materials');
             return redirect()->route('index-fast-moving');
-        } elseif($material->materials_type_id === '3'){
+        } elseif ($material->materials_type_id === '3') {
+            notify()->success('Succesfully Update Materials');
             return redirect()->route('index-slow-moving');
         } else {
+            notify()->success('Succesfully Update Materials');
             return redirect()->route('index-critical');
         }
     }
@@ -221,6 +344,18 @@ class MaterialsController extends Controller
         foreach ($images as $image) {
             Storage::disk('public')->delete($image->file);
             $image->delete();
+        }
+
+        if($material->selected_materials){
+            $selectedMaterials = json_decode($material->selected_materials);
+
+            foreach ($selectedMaterials as $item) {
+                $selectedMaterial = Materials::find($item);
+
+                $selectedMaterial->update([
+                   'selected_materials' => null,
+                ]);
+            }
         }
 
         $material->delete();
@@ -249,18 +384,16 @@ class MaterialsController extends Controller
         return Excel::download(new MaterialsExport, 'materials.xlsx');
     }
 
-    public function deleteSelected(Request $request)
+    public function getSimilarMaterial(Request $request)
     {
-        $selectedIdsString = $request->input('selectedIds')[0];
-        $selectedIdsArray = explode(',', $selectedIdsString);
+        $query = Materials::where('name', 'LIKE', '%' . $request->q . '%');
 
-        if (!empty($selectedIdsArray)) {
-            Materials::whereIn('id', $selectedIdsArray)->delete();
-
-            notify()->success('Succesfully Delete Materials');
-            return redirect()->back();
+        if ($request->has('materials_type_id')) {
+            $query->where('materials_type_id', $request->materials_type_id);
         }
 
-        return notify()->success('Please Select Material');
+        $data = $query->paginate(10);
+
+        return response()->json($data);
     }
 }
