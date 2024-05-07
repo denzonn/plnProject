@@ -97,22 +97,23 @@ class MaterialsController extends Controller
 
         $material = Materials::create($data);
 
-        $photos = [];
         if ($request->hasFile('photos')) {
+            $photos = [];
             foreach ($request->file('photos') as $photo) {
                 $extension = $photo->getClientOriginalExtension();
                 $file_name = "material-" . $slug . "-" . uniqid() . "." . $extension;
                 $path = $photo->storeAs('materials', $file_name, 'public');
                 $photos[] = $path;
             }
+
+            foreach ($photos as $path) {
+                MaterialImage::create([
+                    'file' => $path,
+                    'materials_id' => $material->id
+                ]);
+            }
         }
 
-        foreach ($photos as $path) {
-            MaterialImage::create([
-                'file' => $path,
-                'materials_id' => $material->id
-            ]);
-        }
 
         notify()->success('Succesfully Create Materials');
 
@@ -154,7 +155,7 @@ class MaterialsController extends Controller
         $selected = [];
         if ($selectedMaterials) {
             foreach ($selectedMaterials as $item) {
-                $selectedMaterial = Materials::where('id', $item)->first(); // Menggunakan first() karena kita hanya mengharapkan satu hasil
+                $selectedMaterial = Materials::where('id', $item)->first();
                 if ($selectedMaterial) {
                     $selected[] = $selectedMaterial;
                 }
@@ -177,7 +178,6 @@ class MaterialsController extends Controller
         $data = $request->all();
         $material = Materials::findOrFail($id);
 
-
         $this->validate($request, [
             'photos.*' => 'required|image|mimes:jpeg,png,jpg',
         ]);
@@ -188,16 +188,30 @@ class MaterialsController extends Controller
 
         $selected = json_encode($selectedMaterials);
 
+        if ($request->input('selectedMaterials') == null) {
+            if ($material->selected_materials) {
+                $removeAllSelected = json_decode($material->selected_materials);
+
+                foreach ($removeAllSelected as $removeSelect) {
+                    $dataRemove = Materials::find($removeSelect);
+
+                    if ($dataRemove) {
+                        $dataRemove->update([
+                            'selected_materials' => null
+                        ]);
+                    }
+                }
+            }
+        }
+
         $material->update([
             ...$data,
-            'selected_materials' => $selected
+            'selected_materials' => $request->input('selectedMaterials') ? $selected : null
         ]);
 
-        $alreadySelectedMaterials = json_decode($material->selected_materials);
-
-        $newlySelectedMaterials = array_diff($alreadySelectedMaterials, $selectedMaterials);
-
         if ($selectedMaterials) {
+            $alreadySelectedMaterials = json_decode($material->selected_materials);
+            $newlySelectedMaterials = array_diff($alreadySelectedMaterials, $selectedMaterials);
             foreach ($selectedMaterials as $selectedMaterialId) {
                 // Ambil data material yang dipilih
                 $selectedMaterial = Materials::find($selectedMaterialId);
@@ -268,6 +282,33 @@ class MaterialsController extends Controller
                     foreach ($photosSelected as $path) {
                         MaterialImage::create([
                             'file' => $path,
+                            'materials_id' => $selectedMaterial->id
+                        ]);
+                    }
+                } else {
+                    $imageMaterial = MaterialImage::where('materials_id', $selectedMaterial->id)->get();
+                    if ($imageMaterial) {
+                        foreach ($imageMaterial as $image) {
+                            Storage::disk('public')->delete($image->file);
+                            $image->delete();
+                        }
+                    }
+
+                    $imageUpdate = MaterialImage::where('materials_id', $material->id)->get();
+
+                    foreach ($imageUpdate as $newImage) {
+                        // Tentukan path penyimpanan baru untuk file yang akan disalin
+                        $fileParts = explode('.', $selectedMaterial->file);
+                        $extension = end($fileParts);
+                        $newFileName = "material-" . $selectedMaterial->slug . "-" . uniqid() . "." . $extension;
+                        $destinationPath = 'materials/' . $newFileName;
+
+                        // Salin file ke direktori penyimpanan baru
+                        Storage::copy($newImage->file, $destinationPath);
+
+                        // Simpan nama file baru ke dalam database
+                        MaterialImage::create([
+                            'file' => $destinationPath,
                             'materials_id' => $selectedMaterial->id
                         ]);
                     }
@@ -346,14 +387,14 @@ class MaterialsController extends Controller
             $image->delete();
         }
 
-        if($material->selected_materials){
+        if ($material->selected_materials) {
             $selectedMaterials = json_decode($material->selected_materials);
 
             foreach ($selectedMaterials as $item) {
                 $selectedMaterial = Materials::find($item);
 
                 $selectedMaterial->update([
-                   'selected_materials' => null,
+                    'selected_materials' => null,
                 ]);
             }
         }
