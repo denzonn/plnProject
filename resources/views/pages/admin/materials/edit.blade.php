@@ -61,13 +61,13 @@
                         <label for="">Tanggal Pemasangan Terakhir</label>
                         <input type="date" name="last_placement_date"
                             class="w-full border px-4 py-2 rounded-md bg-transparent"
-                            value="{{ $materials->last_placement_date }}" required />
+                            value="{{ $materials->last_placement_date }}" />
                     </div>
                     <div class="mt-6 flex flex-col gap-2">
                         <label for="">Link Pembelian</label>
                         <input type="text" placeholder="Masukkan Link Pembelian" name="purchase_link"
                             class="w-full border px-4 py-2 rounded-md bg-transparent "
-                            value="{{ $materials->purchase_link }}" required />
+                            value="{{ $materials->purchase_link }}" />
                     </div>
                     <div class="mt-6 flex flex-col gap-2">
                         <label for="">Gambar <span class="text-[10px] text-red-500">*Tidak perlu upload kalau tidak

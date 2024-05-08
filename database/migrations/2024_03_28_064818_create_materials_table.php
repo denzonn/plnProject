@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug');
-            $table->longText('spesification');
+            $table->longText('spesification')->nullable();
             $table->integer('new_stock');
             $table->integer('limit_stock');
             $table->integer('used_stock');
             $table->foreignId('materials_type_id')->constrained('materials_type')->onDelete('cascade');
-            $table->date('last_placement_date');
-            $table->string('purchase_link');
+            $table->date('last_placement_date')->nullable();
+            $table->string('purchase_link')->nullable();
             $table->json('selected_materials')->nullable();
             $table->timestamps();
         });
