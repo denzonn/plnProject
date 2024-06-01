@@ -143,7 +143,7 @@ class MaterialsController extends Controller
                 $selectedMaterial->update([
                     'name' => $selectedMaterial->name,
                     'slug' => $selectedMaterial->slug,
-                    'spesification' => $selectedMaterial->spesification,
+                    'spesification' => $request->input('spesification'),
                     'materials_type_id' => $selectedMaterial->materials_type_id,
                     'last_placement_data' => $selectedMaterial->last_placement_data,
                     'selected_materials' => json_encode($updatedSelectedMaterials),
@@ -339,7 +339,7 @@ class MaterialsController extends Controller
                 $selectedMaterial->update([
                     'name' => $selectedMaterial->name,
                     'slug' => $selectedMaterial->slug,
-                    'spesification' => $selectedMaterial->spesification,
+                    'spesification' => $request->input('spesification'),
                     'materials_type_id' => $selectedMaterial->materials_type_id,
                     'last_placement_data' => $selectedMaterial->last_placement_data,
                     'selected_materials' => json_encode($updatedSelectedMaterials),
@@ -494,7 +494,7 @@ class MaterialsController extends Controller
             $query->where('materials_type_id', $request->materials_type_id);
         }
 
-        $data = $query->get();
+        $data = $query->paginate(500);
 
         return response()->json($data);
     }
