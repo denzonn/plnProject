@@ -198,10 +198,10 @@ class MaterialsController extends Controller
             }
         }
 
-        if ($data['new_stock'] <= $data['limit_stock']) {
-            $sendEmailNotificationController = new sendEmailNotificationController();
-            $sendEmailNotificationController->index();
-        }
+        // if ($data['new_stock'] <= $data['limit_stock']) {
+        //     $sendEmailNotificationController = new sendEmailNotificationController();
+        //     $sendEmailNotificationController->index();
+        // }
 
         if ($request->input('materials_type_id') == 1) {
             notify()->success('Succesfully Create Materials');
@@ -414,10 +414,10 @@ class MaterialsController extends Controller
         }
 
 
-        if ($data['new_stock'] <= $data['limit_stock']) {
-            $sendEmailNotificationController = new sendEmailNotificationController();
-            $sendEmailNotificationController->index();
-        }
+        // if ($data['new_stock'] <= $data['limit_stock']) {
+        //     $sendEmailNotificationController = new sendEmailNotificationController();
+        //     $sendEmailNotificationController->index();
+        // }
 
         if ($material->materials_type_id === '1') {
             notify()->success('Succesfully Update Materials');
