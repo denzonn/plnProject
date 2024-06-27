@@ -467,6 +467,19 @@ class MaterialsController extends Controller
         return redirect()->back();
     }
 
+    public function deleteSelected(Request $request)
+    {
+        $selectedIdsString = $request->input('selectedIds')[0];
+        $selectedIdsArray = explode(',', $selectedIdsString);
+
+        if (!empty($selectedIdsArray)) {
+            Materials::whereIn('id', $selectedIdsArray)->delete();
+            notify()->success('Succesfully Delete Materials');
+            return redirect()->back();
+        }
+        return notify()->success('Please Select Material');
+    }
+
     public function importIndex()
     {
         return view('pages.admin.materials.import.index');

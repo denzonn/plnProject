@@ -25,7 +25,7 @@ class BaseController extends Controller
         $fastMoving = Materials::with('images')->where('materials_type_id', 2)->get();
         $slowMoving = Materials::with('images')->where('materials_type_id', 3)->get();
         $critical = Materials::with('images')->where('materials_type_id', 4)->get();
-        
+
         $keyword = $request->input('keyword');
         $materials = Materials::with('images')->where('name', 'like', '%' . $keyword . '%')->get();
 
@@ -48,6 +48,7 @@ class BaseController extends Controller
     public function materialsDetail($slug)
     {
         $data = Materials::with('images')->where('slug', $slug)->firstOrFail();
+        // dd($data);
 
         $firstImage = $data->images->first();
 

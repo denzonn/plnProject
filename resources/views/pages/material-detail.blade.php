@@ -35,7 +35,7 @@
                 <div class="mt-2">New Stock Units : {{ $data->new_stock }} pcs</div>
                 <div class="mt-2">Used Stock Units : {{ $data->used_stock }} pcs</div>
                 <div class="mt-2">Last Replacement Date :
-                    {{ $data->last_replacement_date ? \Carbon\Carbon::parse($data->last_placement_date)->translatedFormat('l, d F Y') : 'No Date' }}
+                    {{ $data->last_placement_date ? \Carbon\Carbon::parse($data->last_placement_date)->translatedFormat('l, d F Y') : 'No Date' }}
                 </div>
                 <div class="mt-2">Purchase Link : {{ $data->purchase_link ? $data->purchase_link : 'No Purchase Link' }}</div>
             </div>
